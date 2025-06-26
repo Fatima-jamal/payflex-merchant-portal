@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import Transactions from './pages/Transactions';
 import Settlements from './pages/Settlements';
 import RefundRequest from './pages/RefundRequest';
+import GenerateQR from './pages/GenerateQR'; // ✅ Import added
 
 import './App.css';
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/settlements" element={<Settlements />} />
             <Route path="/refund" element={<RefundRequest />} />
+            <Route path="/generate-qr" element={<GenerateQR />} /> {/* ✅ New route */}
           </Routes>
         </div>
       </div>

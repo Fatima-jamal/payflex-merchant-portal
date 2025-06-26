@@ -15,6 +15,7 @@ function Sidebar() {
         <NavLink to="/transactions" className={({ isActive }) => isActive ? "active" : ""}>Transactions</NavLink>
         <NavLink to="/settlements" className={({ isActive }) => isActive ? "active" : ""}>Settlements</NavLink>
         <NavLink to="/refund" className={({ isActive }) => isActive ? "active" : ""}>Refund Request</NavLink>
+        <NavLink to="/generate-qr" className={({ isActive }) => isActive ? "active" : ""}>Generate QR</NavLink> {/* ✅ New item */}
       </nav>
     </div>
   );
