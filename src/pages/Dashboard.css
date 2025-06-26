@@ -1,0 +1,47 @@
+.dashboard-container {
+  padding: 30px;
+  background-color: #f9f6fd;
+  min-height: 100vh;
+}
+
+.dashboard-container h2 {
+  margin-bottom: 25px;
+  color: #4a0072;
+}
+
+.dashboard-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  flex: 1 1 250px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.15);
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-icon {
+  font-size: 36px;
+  color: #7b1fa2;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-weight: bold;
+  color: #4a148c;
+  margin-bottom: 5px;
+}
+
+.card-value {
+  font-size: 20px;
+  color: #212121;
+}
