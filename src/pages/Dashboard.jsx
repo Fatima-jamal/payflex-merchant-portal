@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-  FaExchangeAlt,     // ↔ transactions
-  FaMoneyBillWave,   // 💸 volume
-  FaHandHoldingUsd,  // 🤲 amount paid
-  FaCheckCircle      // ✅ success count
+  FaExchangeAlt,
+  FaMoneyBillWave,
+  FaHandHoldingUsd,
+  FaCheckCircle
 } from "react-icons/fa";
-
+import axios from "../api/axiosInstance";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const stats = {
-    transactions: 1519,
-    totalVolume: "2,56,41,520.93",
-    amountPaid: "9,24,129.26",
-    successful: 1519
-  };
+  const [stats, setStats] = useState({
+    transactions: 0,
+    totalVolume: 0,
+    amountPaid: 0,
+    successful: 0
+  });
+
+  useEffect(() => {
+    axios.get("/merchant-dashboard")
+      .then((response) => {
+        setStats({
+          transactions: response.data.totalTransactions,
+          totalVolume: response.data.totalVolume.toLocaleString(),
+          amountPaid: response.data.amountPaid.toLocaleString(),
+          successful: response.data.successfulTransactions
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching dashboard data:", error);
+      });
+  }, []);
 
   return (
     <div className="dashboard-container">

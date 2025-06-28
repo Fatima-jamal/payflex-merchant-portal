@@ -1,76 +1,70 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import './RefundRequest.css';
+// src/pages/RefundRequest.jsx
+import React, { useState } from "react";
+import "./RefundRequest.css";
 
 function RefundRequest() {
-  const [formData, setFormData] = useState({
-    transactionId: '',
-    amount: '',
-    reason: '',
-  });
-
-  const [status, setStatus] = useState('');
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [transactionId, setTransactionId] = useState("");
+  const [amount, setAmount] = useState("");
+  const [reason, setReason] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const refundData = {
+      transactionId,
+      amount,
+      reason,
+    };
+
     try {
-      const response = await axios.post('http://localhost:8080/api/refund-requests', formData);
-      setStatus('success');
-      setFormData({ transactionId: '', amount: '', reason: '' });
-      alert('Refund request submitted successfully!');
+      const response = await fetch("http://localhost:8080/api/refund-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(refundData),
+      });
+
+      if (response.ok) {
+        alert("Refund request submitted successfully!");
+        setTransactionId("");
+        setAmount("");
+        setReason("");
+      } else {
+        alert("Failed to submit refund request.");
+      }
     } catch (error) {
-      setStatus('error');
-      alert('Failed to submit refund request. Please try again.');
-      console.error('Refund error:', error);
+      console.error("Error submitting refund request:", error);
+      alert("Error submitting refund request.");
     }
   };
 
   return (
     <div className="refund-container">
-      <div className="refund-box">
-        <h2>Request a Refund</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Transaction ID:</label>
-            <input
-              type="text"
-              name="transactionId"
-              value={formData.transactionId}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Amount to Refund:</label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Reason for Refund:</label>
-            <textarea
-              name="reason"
-              rows="4"
-              value={formData.reason}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit">Submit Refund Request</button>
-        </form>
-      </div>
+      <h2>Request a Refund</h2>
+
+      <label>Transaction ID:</label>
+      <input
+        type="text"
+        value={transactionId}
+        onChange={(e) => setTransactionId(e.target.value)}
+      />
+
+      <label>Amount to Refund:</label>
+      <input
+        type="text"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+
+      <label>Reason for Refund:</label>
+      <textarea
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        rows="5"
+      />
+
+      <button onClick={handleSubmit}>Submit Refund Request</button>
     </div>
   );
 }
