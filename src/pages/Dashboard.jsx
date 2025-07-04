@@ -16,20 +16,33 @@ function Dashboard() {
     successful: 0
   });
 
+  const merchantId = localStorage.getItem("merchantId");
+
   useEffect(() => {
-    axios.get("/merchant-dashboard")
+    if (!merchantId) {
+      console.warn("Merchant ID not found in localStorage.");
+      return;
+    }
+
+    console.log(`Fetching dashboard for merchantId = ${merchantId}`);
+
+    axios
+      .get(`/dashboard/summary?merchantId=${merchantId}`)
       .then((response) => {
+        const data = response.data;
+        console.log("Dashboard API response:", data);
+
         setStats({
-          transactions: response.data.totalTransactions,
-          totalVolume: response.data.totalVolume.toLocaleString(),
-          amountPaid: response.data.amountPaid.toLocaleString(),
-          successful: response.data.successfulTransactions
+          transactions: data.transactionCount || 0,
+          totalVolume: Number(data.totalVolume || 0).toLocaleString(),
+          amountPaid: Number(data.totalPaid || 0).toLocaleString(),
+          successful: data.successfulTransactions || 0
         });
       })
       .catch((error) => {
         console.error("Error fetching dashboard data:", error);
       });
-  }, []);
+  }, [merchantId]);
 
   return (
     <div className="dashboard-container">

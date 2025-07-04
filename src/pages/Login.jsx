@@ -1,54 +1,63 @@
+// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-const Login = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+function Login() {
+  const [mid, setMid] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
-    if (email === 'merchant@payflex.com' && password === 'merchant123') {
-      localStorage.setItem('merchantLoggedIn', 'true'); // ✅ fixed key
-      navigate('/dashboard');
-    } else {
-      setError('Invalid credentials. Please try again.');
+    try {
+      const response = await fetch('http://localhost:8081/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mid, password }),
+      });
+
+      if (response.ok) {
+        // Save MID for filtering all future API requests
+        localStorage.setItem('merchantLoggedIn', 'true');
+        localStorage.setItem('merchantMID', mid);
+        navigate('/dashboard');
+      } else {
+        const text = await response.text();
+        setError(text);
+      }
+    } catch (err) {
+      setError('Server error. Please try again later.');
     }
   };
 
   return (
     <div className="login-container">
-      <div className="login-box">
+      <form className="login-box" onSubmit={handleLogin}>
         <h2>PayFlex</h2>
-        <p>Merchant Portal Login</p>
-
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email (e.g. merchant@payflex.com)"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password (e.g. merchant123)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          {error && <p className="error">{error}</p>}
-
-          <button type="submit">Login</button>
-        </form>
-      </div>
+        <h4>Merchant Portal Login</h4>
+        <input
+          type="text"
+          placeholder="MID"
+          value={mid}
+          onChange={(e) => setMid(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        {error && <p className="error">{error}</p>}
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
-};
+}
 
 export default Login;

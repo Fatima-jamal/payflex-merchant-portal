@@ -1,33 +1,20 @@
-import React from "react";
-import "./Transactions.css";
+import React, { useEffect, useState } from 'react';
+import './Transactions.css';
 
 function Transactions() {
-  const transactions = [
-    {
-      id: "TXN001",
-      date: "2025-06-24",
-      amount: "12,000.00",
-      status: "Success",
-      tid: "90004001",
-      mid: "920215331100118"
-    },
-    {
-      id: "TXN002",
-      date: "2025-06-23",
-      amount: "8,500.50",
-      status: "Failed",
-      tid: "90004002",
-      mid: "920215331100118"
-    },
-    {
-      id: "TXN003",
-      date: "2025-06-23",
-      amount: "17,999.00",
-      status: "Success",
-      tid: "90004003",
-      mid: "920215331100118"
+  const [transactions, setTransactions] = useState([]);
+  const mid = localStorage.getItem('merchantMID');
+
+  useEffect(() => {
+    if (mid) {
+      fetch(`http://localhost:8081/api/transactions/${mid}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Transactions fetched: ", data);
+          setTransactions(data);
+        });
     }
-  ];
+  }, [mid]);
 
   return (
     <div className="transactions-container">
@@ -44,16 +31,22 @@ function Transactions() {
           </tr>
         </thead>
         <tbody>
-          {transactions.map((txn) => (
-            <tr key={txn.id}>
-              <td>{txn.id}</td>
-              <td>{txn.date}</td>
-              <td>{txn.mid}</td>
-              <td>{txn.tid}</td>
-              <td>{txn.amount}</td>
-              <td className={txn.status.toLowerCase()}>{txn.status}</td>
+          {transactions.length > 0 ? (
+            transactions.map((txn, index) => (
+              <tr key={index}>
+                <td>{txn.transaction_id}</td>
+                <td>{txn.created_at?.substring(0, 10)}</td>
+                <td>{txn.mid}</td>
+                <td>{txn.tid}</td>
+                <td>{txn.amount}</td>
+                <td className="status">{txn.status}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6">No transaction records found.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

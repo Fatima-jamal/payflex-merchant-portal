@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
@@ -12,41 +12,60 @@ import GenerateQR from './pages/GenerateQR';
 
 import './App.css';
 
-function App() {
+function ProtectedRoute({ children }) {
   const isLoggedIn = localStorage.getItem('merchantLoggedIn') === 'true';
+  const location = useLocation();
+
+  if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+}
+
+function AppWrapper() {
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('merchantLoggedIn') === 'true');
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const loggedIn = localStorage.getItem('merchantLoggedIn') === 'true';
+      setIsLoggedIn(loggedIn);
+    };
+
+    window.addEventListener('storage', checkAuth);
+    return () => window.removeEventListener('storage', checkAuth);
+  }, []);
 
   return (
-    <Router>
-      <div className="app-container">
-        {/* Only show sidebar if logged in */}
-        {isLoggedIn && <Sidebar />}
+    <div className="app-container">
+      {isLoggedIn && <Sidebar />}
 
-        <div className="main-content">
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
+      <div className="main-content">
+        <Routes>
+          {/* Redirect based on login state */}
+          <Route path="/" element={<Navigate to={isLoggedIn ? '/dashboard' : '/login'} />} />
+          <Route path="/login" element={<Login />} />
 
-            {/* Protected Routes */}
-            {isLoggedIn ? (
-              <>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/transactions" element={<Transactions />} />
-                <Route path="/settlements" element={<Settlements />} />
-                <Route path="/refund" element={<RefundRequest />} />
-                <Route path="/generate-qr" element={<GenerateQR />} />
-              </>
-            ) : (
-              <>
-                {/* Catch-all redirect if not logged in */}
-                <Route path="*" element={<Navigate to="/login" />} />
-              </>
-            )}
-          </Routes>
-        </div>
+          {/* Protected Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+          <Route path="/settlements" element={<ProtectedRoute><Settlements /></ProtectedRoute>} />
+          <Route path="/refund" element={<ProtectedRoute><RefundRequest /></ProtectedRoute>} />
+          <Route path="/generate-qr" element={<ProtectedRoute><GenerateQR /></ProtectedRoute>} />
+
+          {/* Catch-all fallback */}
+          <Route path="*" element={<Navigate to={isLoggedIn ? '/dashboard' : '/login'} />} />
+        </Routes>
       </div>
-    </Router>
+    </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppWrapper />
+    </Router>
+  );
+}

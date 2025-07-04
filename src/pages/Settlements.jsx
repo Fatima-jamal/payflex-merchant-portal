@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from "react";
-import "./Settlements.css";
+import React, { useEffect, useState } from 'react';
+import './Settlements.css';
 
 function Settlements() {
   const [settlements, setSettlements] = useState([]);
+  const mid = localStorage.getItem('merchantMID');
 
   useEffect(() => {
-    // Sample static data for now
-    setSettlements([
-      {
-        date: "2025-06-22",
-        amount: "9,24,129.26",
-        reference: "SETT123456",
-        bank: "Habib Bank Limited",
-        status: "Paid"
-      },
-      {
-        date: "2025-06-15",
-        amount: "6,78,000.00",
-        reference: "SETT123455",
-        bank: "UBL",
-        status: "Paid"
-      }
-    ]);
-  }, []);
+    if (mid) {
+      fetch(`http://localhost:8081/api/settlements/${mid}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Settlements fetched: ", data);
+          setSettlements(data);
+        });
+    }
+  }, [mid]);
 
   return (
     <div className="settlements-container">
@@ -38,15 +30,21 @@ function Settlements() {
           </tr>
         </thead>
         <tbody>
-          {settlements.map((item, index) => (
-            <tr key={index}>
-              <td>{item.date}</td>
-              <td>{item.amount}</td>
-              <td>{item.reference}</td>
-              <td>{item.bank}</td>
-              <td className="status">{item.status}</td>
+          {settlements.length > 0 ? (
+            settlements.map((item, index) => (
+              <tr key={index}>
+                <td>{item.created_at?.substring(0, 10)}</td>
+                <td>{item.amount}</td>
+                <td>{item.reference_id}</td>
+                <td>{item.bank_name}</td>
+                <td className="status">{item.status}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">No settlement records found.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
