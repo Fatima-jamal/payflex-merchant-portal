@@ -21,9 +21,8 @@ function Login() {
       });
 
       if (response.ok) {
-        // Save MID for filtering all future API requests
         localStorage.setItem('merchantLoggedIn', 'true');
-        localStorage.setItem('merchantMID', mid);
+        localStorage.setItem('merchantMID', mid); // ✅ CONSISTENT KEY
         navigate('/dashboard');
       } else {
         const text = await response.text();

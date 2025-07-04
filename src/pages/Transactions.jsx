@@ -1,4 +1,6 @@
+// src/pages/Transactions.jsx
 import React, { useEffect, useState } from 'react';
+import axios from '../api/axiosInstance';
 import './Transactions.css';
 
 function Transactions() {
@@ -6,14 +8,18 @@ function Transactions() {
   const mid = localStorage.getItem('merchantMID');
 
   useEffect(() => {
-    if (mid) {
-      fetch(`http://localhost:8081/api/transactions/${mid}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Transactions fetched: ", data);
-          setTransactions(data);
-        });
+    if (!mid) {
+      console.error("MID not found in localStorage.");
+      return;
     }
+
+    axios.get(`/transactions/mid/${mid}`)
+      .then(response => {
+        setTransactions(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching transactions:', error);
+      });
   }, [mid]);
 
   return (
@@ -23,28 +29,22 @@ function Transactions() {
         <thead>
           <tr>
             <th>Transaction ID</th>
-            <th>Date</th>
             <th>MID</th>
-            <th>TID</th>
             <th>Amount (Rs.)</th>
-            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           {transactions.length > 0 ? (
-            transactions.map((txn, index) => (
+            transactions.map((item, index) => (
               <tr key={index}>
-                <td>{txn.transaction_id}</td>
-                <td>{txn.created_at?.substring(0, 10)}</td>
-                <td>{txn.mid}</td>
-                <td>{txn.tid}</td>
-                <td>{txn.amount}</td>
-                <td className="status">{txn.status}</td>
+                <td>{item.id}</td>
+                <td>{item.mid}</td>
+                <td>{item.amount}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6">No transaction records found.</td>
+              <td colSpan="3">No Transactions Found</td>
             </tr>
           )}
         </tbody>

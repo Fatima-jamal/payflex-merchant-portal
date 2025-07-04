@@ -39,22 +39,16 @@ function AppWrapper() {
   return (
     <div className="app-container">
       {isLoggedIn && <Sidebar />}
-
       <div className="main-content">
         <Routes>
-          {/* Redirect based on login state */}
           <Route path="/" element={<Navigate to={isLoggedIn ? '/dashboard' : '/login'} />} />
           <Route path="/login" element={<Login />} />
-
-          {/* Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
           <Route path="/settlements" element={<ProtectedRoute><Settlements /></ProtectedRoute>} />
           <Route path="/refund" element={<ProtectedRoute><RefundRequest /></ProtectedRoute>} />
           <Route path="/generate-qr" element={<ProtectedRoute><GenerateQR /></ProtectedRoute>} />
-
-          {/* Catch-all fallback */}
           <Route path="*" element={<Navigate to={isLoggedIn ? '/dashboard' : '/login'} />} />
         </Routes>
       </div>

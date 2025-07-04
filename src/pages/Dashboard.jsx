@@ -1,48 +1,43 @@
+// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import {
   FaExchangeAlt,
   FaMoneyBillWave,
   FaHandHoldingUsd,
-  FaCheckCircle
+  FaCheckCircle,
 } from "react-icons/fa";
 import axios from "../api/axiosInstance";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const [stats, setStats] = useState({
-    transactions: 0,
-    totalVolume: 0,
-    amountPaid: 0,
-    successful: 0
-  });
-
-  const merchantId = localStorage.getItem("merchantId");
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    if (!merchantId) {
-      console.warn("Merchant ID not found in localStorage.");
+    const mid = localStorage.getItem("merchantMID"); // ✅ USE SAME KEY
+
+    if (!mid) {
+      console.error("MID not found in localStorage.");
       return;
     }
 
-    console.log(`Fetching dashboard for merchantId = ${merchantId}`);
-
     axios
-      .get(`/dashboard/summary?merchantId=${merchantId}`)
-      .then((response) => {
-        const data = response.data;
-        console.log("Dashboard API response:", data);
-
+      .get("/dashboard/summary", { params: { mid } }) // ✅ match backend param
+      .then((res) => {
+        const data = res.data || {};
+        console.log("Dashboard API Response:", data);
         setStats({
           transactions: data.transactionCount || 0,
-          totalVolume: Number(data.totalVolume || 0).toLocaleString(),
-          amountPaid: Number(data.totalPaid || 0).toLocaleString(),
-          successful: data.successfulTransactions || 0
+          totalVolume: data.totalVolume || 0,
+          amountPaid: data.totalPaid || 0,
+          successful: data.successfulTransactions || 0,
         });
       })
-      .catch((error) => {
-        console.error("Error fetching dashboard data:", error);
+      .catch((err) => {
+        console.error("Error loading dashboard stats", err);
       });
-  }, [merchantId]);
+  }, []);
+
+  if (!stats) return <div className="dashboard-container">Loading Dashboard...</div>;
 
   return (
     <div className="dashboard-container">
@@ -57,13 +52,13 @@ function Dashboard() {
         <div className="card">
           <FaMoneyBillWave className="card-icon" />
           <p className="card-title">Total Volume</p>
-          <p className="card-value">{stats.totalVolume}</p>
+          <p className="card-value">{Number(stats.totalVolume).toLocaleString()}</p>
         </div>
 
         <div className="card">
           <FaHandHoldingUsd className="card-icon" />
           <p className="card-title">Amount Paid</p>
-          <p className="card-value">{stats.amountPaid}</p>
+          <p className="card-value">{Number(stats.amountPaid).toLocaleString()}</p>
         </div>
 
         <div className="card">

@@ -16,6 +16,10 @@ function Settlements() {
     }
   }, [mid]);
 
+  const formatValue = (value) => {
+    return value ? value : 'N/A';
+  };
+
   return (
     <div className="settlements-container">
       <h2>Settlement History</h2>
@@ -25,7 +29,6 @@ function Settlements() {
             <th>Date</th>
             <th>Amount (Rs.)</th>
             <th>Reference ID</th>
-            <th>Bank</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -33,16 +36,15 @@ function Settlements() {
           {settlements.length > 0 ? (
             settlements.map((item, index) => (
               <tr key={index}>
-                <td>{item.created_at?.substring(0, 10)}</td>
-                <td>{item.amount}</td>
-                <td>{item.reference_id}</td>
-                <td>{item.bank_name}</td>
-                <td className="status">{item.status}</td>
+                <td>{formatValue(item.settlementDate)}</td>
+                <td>{formatValue(item.totalAmount)}</td>
+                <td>{formatValue(item.referenceId)}</td>
+                <td className="status">{formatValue(item.status)}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5">No settlement records found.</td>
+              <td colSpan="4">No settlement records found.</td>
             </tr>
           )}
         </tbody>
