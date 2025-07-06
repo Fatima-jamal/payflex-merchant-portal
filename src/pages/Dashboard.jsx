@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import {
   FaExchangeAlt,
@@ -11,9 +10,10 @@ import "./Dashboard.css";
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
+  const [dateFilter, setDateFilter] = useState("all"); // 🟣 New filter
 
   useEffect(() => {
-    const mid = localStorage.getItem("merchantMID"); // ✅ USE SAME KEY
+    const mid = localStorage.getItem("merchantMID");
 
     if (!mid) {
       console.error("MID not found in localStorage.");
@@ -21,7 +21,9 @@ function Dashboard() {
     }
 
     axios
-      .get("/dashboard/summary", { params: { mid } }) // ✅ match backend param
+      .get("/dashboard/summary", {
+        params: { mid, range: dateFilter }, // 🟣 Add filter param
+      })
       .then((res) => {
         const data = res.data || {};
         console.log("Dashboard API Response:", data);
@@ -35,13 +37,25 @@ function Dashboard() {
       .catch((err) => {
         console.error("Error loading dashboard stats", err);
       });
-  }, []);
+  }, [dateFilter]); // 🟣 Rerun on filter change
 
   if (!stats) return <div className="dashboard-container">Loading Dashboard...</div>;
 
   return (
     <div className="dashboard-container">
-      <h2>Welcome, Merchant</h2>
+      <div className="dashboard-header">
+        <h2>Welcome, Merchant</h2>
+        <select
+          className="date-filter"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+        >
+          <option value="all">All Time</option>
+          <option value="last7">Last 7 Days</option>
+          <option value="thisMonth">This Month</option>
+        </select>
+      </div>
+
       <div className="dashboard-cards">
         <div className="card">
           <FaExchangeAlt className="card-icon" />

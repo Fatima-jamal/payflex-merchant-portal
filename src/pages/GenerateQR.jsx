@@ -19,43 +19,46 @@ const GenerateQR = () => {
   };
 
   return (
-    <div className="qr-container">
-      <h2>Generate Payment QR Code</h2>
+    <div className="qr-page-wrapper">
+      <div className="qr-container">
+        <h2>Generate Payment QR Code</h2>
 
-      <div className="qr-form-group">
-        <label>Merchant ID:</label>
-        <input
-          type="text"
-          value={merchantId}
-          onChange={(e) => setMerchantId(e.target.value)}
-        />
-      </div>
-
-      <div className="qr-form-group">
-        <label>Amount:</label>
-        <input
-          type="text"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-      </div>
-
-      <div className="qr-form-group">
-        <label>Description:</label>
-        <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-
-      <button onClick={handleGenerate}>Generate QR</button>
-
-      {qrData && (
-        <div className="qr-code-box">
-          <QRCode value={qrData} size={200} />
+        <div className="qr-form-group">
+          <label>Merchant ID:</label>
+          <input
+            type="text"
+            value={merchantId}
+            onChange={(e) => setMerchantId(e.target.value)}
+          />
         </div>
-      )}
+
+        <div className="qr-form-group">
+          <label>Amount:</label>
+          <input
+            type="text"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </div>
+
+        <div className="qr-form-group">
+          <label>Description:</label>
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <button onClick={handleGenerate}>Generate QR</button>
+
+        {qrData && (
+          <div className="qr-code-box">
+            <h3>Scan to Pay</h3>
+            <QRCode value={qrData} size={200} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

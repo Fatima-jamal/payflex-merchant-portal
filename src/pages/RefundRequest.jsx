@@ -10,14 +10,16 @@ function RefundRequest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const merchantId = localStorage.getItem("merchantId"); // Ensure it's set during login
     const refundData = {
       transactionId,
-      amount,
+      amount: parseFloat(amount),
       reason,
+      merchantId,
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/refund-request", {
+      const response = await fetch("http://localhost:8081/api/refunds", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,13 +27,15 @@ function RefundRequest() {
         body: JSON.stringify(refundData),
       });
 
+      const result = await response.text();
+
       if (response.ok) {
         alert("Refund request submitted successfully!");
         setTransactionId("");
         setAmount("");
         setReason("");
       } else {
-        alert("Failed to submit refund request.");
+        alert("Failed to submit refund request.\n" + result);
       }
     } catch (error) {
       console.error("Error submitting refund request:", error);

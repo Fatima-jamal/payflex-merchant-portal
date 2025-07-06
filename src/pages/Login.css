@@ -1,63 +1,115 @@
+/* Fullscreen background with subtle overlay */
 .login-container {
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 100vw;
-  background-color: #8a2be2;
+  background: url('/mp.jpg') center center / cover no-repeat fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
 }
 
-.login-box {
-  background-color: white;
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  width: 400px;
-  border: 2px solid #8a2be2;
-}
-
-.login-box h2 {
-  color: #8a2be2;
-  margin-bottom: 10px;
-}
-
-.login-box p {
-  color: #8a2be2;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.login-box input {
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
   width: 100%;
-  padding: 12px;
+  background: rgba(0, 0, 0, 0.55); /* darker for better readability */
+  z-index: 1;
+}
+
+/* Glassmorphism login box */
+.login-box {
+  position: relative;
+  z-index: 2;
+  width: 400px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: white;
+}
+
+/* Headings */
+.login-box h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #e3d3ff;
+}
+
+.portal-title {
+  font-size: 14px;
+  margin-bottom: 30px;
+  font-weight: 500;
+  color: #f0f0f0;
+}
+
+/* Inputs */
+.login-box input[type="text"],
+.login-box input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
   margin-bottom: 15px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: none;
   font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
 }
 
+/* Button */
 .login-box button {
-  background-color: #8a2be2;
+  background-color: #9a40ff;
   color: white;
   border: none;
   padding: 12px;
   width: 100%;
   border-radius: 8px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .login-box button:hover {
-  background-color: #6e1ccf;
+  background-color: #7e24d1;
 }
 
-.error {
-  color: red;
-  margin-bottom: 10px;
+/* Options Row */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 13px;
+  color: #eee;
+  margin: -6px 0 18px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.forgot-password {
+  color: #dfbfff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Error Message */
+.error {
+  color: #ffaaaa;
+  font-size: 13px;
+  margin-bottom: 12px;
 }

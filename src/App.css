@@ -1,11 +1,7 @@
-.app-container {
-  display: flex;
-}
-
 .main-content {
   margin-left: 250px;
   padding: 40px;
   flex-grow: 1;
-  background-color: #fbf9ff;
+  background: linear-gradient(to right, #fdf1f9, #f8d7f3, #f5c0eb);
   min-height: 100vh;
 }

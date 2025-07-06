@@ -1,7 +1,9 @@
 .transactions-container {
   padding: 30px;
-  background-color: #f9f6fd;
+  background-color: transparent; /* Let App.css handle pastel pink */
   min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .transactions-container h2 {

@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
@@ -22,7 +21,7 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem('merchantLoggedIn', 'true');
-        localStorage.setItem('merchantMID', mid); // ✅ CONSISTENT KEY
+        localStorage.setItem('merchantMID', mid);
         navigate('/dashboard');
       } else {
         const text = await response.text();
@@ -35,9 +34,11 @@ function Login() {
 
   return (
     <div className="login-container">
+      <div className="overlay" />
       <form className="login-box" onSubmit={handleLogin}>
         <h2>PayFlex</h2>
-        <h4>Merchant Portal Login</h4>
+        <h4 className="portal-title">Secure Merchant Portal Access</h4>
+
         <input
           type="text"
           placeholder="MID"
@@ -52,6 +53,15 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        <div className="login-options">
+          <label className="remember-me">
+            <input type="checkbox" />
+            <span>Remember Me</span>
+          </label>
+          <a href="#" className="forgot-password">Forgot Password?</a>
+        </div>
+
         {error && <p className="error">{error}</p>}
         <button type="submit">Login</button>
       </form>

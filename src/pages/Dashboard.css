@@ -1,11 +1,30 @@
 .dashboard-container {
   padding: 30px;
-  background-color: #f9f6fd;
+  background-color: transparent; /* Let .main-content handle the gradient */
   min-height: 100vh;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .dashboard-container h2 {
   margin-bottom: 25px;
+  color: #4a0072;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap; /* Fixes cut text on smaller screens */
+}
+
+.date-filter {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+  font-weight: bold;
   color: #4a0072;
 }
 
