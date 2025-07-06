@@ -16,7 +16,7 @@ function Sidebar() {
 
   return (
     <div className="sidebar">
-      <div className="sidebar-title">PayFlex Merchant</div>
+      <div className="sidebar-title">PayFlex Merchant Portal</div>
       <hr className="sidebar-line" />
 
       <nav className="sidebar-nav">
